@@ -1,5 +1,5 @@
-# SCALA-PROJECT-Spring-2020
-#### SCALA PROJECT: Spring 2020
+# SCALA-PROJECT 
+## Hedge Fund Application: Real Time Risk Analysis
 
 Building reactive application for portfolio management and risk analysis
 
