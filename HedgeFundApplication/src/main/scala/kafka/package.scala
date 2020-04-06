@@ -1,3 +1,4 @@
+import java.net.URL
 import java.util
 import java.util.Properties
 
@@ -10,16 +11,21 @@ import spray.json.DefaultJsonProtocol._
 import spray.json.{JsValue, _}
 
 import scala.collection.JavaConverters._
+import scala.concurrent.Future
+import scala.io.Source
 
 package object kafka {
 
-  def writeToKafka(topic: String, url: String): Unit = {
+  val APIKEY: String = "U4HV0SUO7S0J40TC"
+
+  def writeToKafka(topic: String, symbol: String): Unit = {
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     val producer = new KafkaProducer[String, String](props)
     // Make API call in every 5 minutes
+    val url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+symbol+"&interval=5min&apikey="+APIKEY
     while(true) {
       val request: HttpRequest = Http(url)
       val record = new ProducerRecord[String, String](topic, request.asString.body)
