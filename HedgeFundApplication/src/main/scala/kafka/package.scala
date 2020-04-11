@@ -6,7 +6,7 @@ import mongo.Helpers._
 import org.apache.kafka.clients.consumer.{ConsumerRecord, KafkaConsumer}
 import org.apache.kafka.clients.producer._
 import org.mongodb.scala.{MongoCollection, _}
-import scalaj.http.{Http, HttpRequest}
+import scalaj.http.{Http, HttpRequest, HttpResponse}
 import spray.json.DefaultJsonProtocol._
 import spray.json.{JsValue, _}
 
@@ -16,7 +16,16 @@ import scala.io.Source
 
 package object kafka {
 
+  def sum(x: Int): Int = {
+    x + 10
+  }
+
   val APIKEY: String = "U4HV0SUO7S0J40TC"
+
+  def checkURLResponse(url: String) = {
+    val response: HttpResponse[String] = Http(url).asString
+    response
+  }
 
   def writeToKafka(topic: String, symbol: String): Unit = {
     val props = new Properties()
