@@ -12,14 +12,14 @@
 * Fetch data in real-time from mongoDB for interactive dashboards
 
 ## Architecture
-![alt text](https://github.com/amitpingale92/Big-Data-Scala-Final-Project/blob/master/Images/ScalaProjectArchitecture.png "Architecture")
+![alt text](/hedge-fund-real-time-analysis/Images/ScalaProjectArchitecture.png "Architecture")
 
 ## Work Flow
 ### Data Engineering
 * Fetch real-time data from Alpha Vantage API
 * Create Kafka topic for multiple stock data
 * Produce & consume data using scala application
-![alt text](https://github.com/amitpingale92/Big-Data-Scala-Final-Project/blob/master/Images/Kafka.png "Kafka")
+![alt text](/hedge-fund-real-time-analysis/Images/Kafka.png "Kafka")
 
 ## Machine Learning
 * Develop ensemble of models
@@ -32,7 +32,7 @@
 ## Machine Learning Pipeline
 * Select model with lowest RMSE value
 * Deploy in spark pipeline
-![alt text](https://github.com/amitpingale92/Big-Data-Scala-Final-Project/blob/master/Images/MachineLearningPipeline.png "Pipeline")
+![alt text](/hedge-fund-real-time-analysis/Images/MachineLearningPipeline.png "Pipeline")
 
 ## Requirements
 * Spark {ML, SQL}
@@ -43,12 +43,4 @@
 
 ## Authors
 * Amit Pingale
-* Shreya Nair
 * Mayank Gangrade
-
-## Licence
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/amitpingale92/Big-Data-Scala-Final-Project/blob/master/LICENSE) file for details
-
-
-
-
