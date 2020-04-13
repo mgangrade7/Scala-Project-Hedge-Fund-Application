@@ -9,3 +9,5 @@ api/
 .idea
 
 output\.html
+
+.DS_Store
