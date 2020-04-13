@@ -39,9 +39,12 @@ package object kafka {
     props.put("bootstrap.servers", "localhost:9092")
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+
     val producer = new KafkaProducer[String, String](props)
-    // Make API call in every 5 minutes
+
     val url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+symbol+"&interval=5min&apikey="+APIKEY
+
+    // Make API call in every 5 minutes
     while(true) {
       checkURLResponse(url).code match {
         case 200 => {
@@ -69,6 +72,7 @@ package object kafka {
     props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     props.put("auto.offset.reset", "latest")
     props.put("group.id", "consumer-group")
+    
     val consumer: KafkaConsumer[String, String] = new KafkaConsumer[String, String](props)
     consumer.subscribe(util.Arrays.asList(topic))
 
