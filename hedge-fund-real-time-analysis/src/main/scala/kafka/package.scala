@@ -15,14 +15,26 @@ import scala.collection.JavaConverters._
  * Package level object consist of all the required methods
  */
 package object kafka {
+
+//  API Key provided by AlphaVantage. One can get the key after registering on website.
   val APIKEY: String = "U4HV0SUO7S0J40TC"
 
+  /**
+   * Function to check the URL response
+   * @param url link of the URL
+   * @return HTTP Response having properties like body, code, header
+   */
   def checkURLResponse(url: String): HttpResponse[String] = {
     val response: HttpResponse[String] = Http(url).asString
     response
   }
 
-  def writeToKafka(topic: String, symbol: String): Unit = {
+  /**
+   * Publish data on kafka topic
+   * @param topic name of the kafka topic
+   * @param symbol symbol of the company share found on AlphaVantage website
+   */
+  def publishToKafka(topic: String, symbol: String): Unit = {
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
@@ -44,6 +56,12 @@ package object kafka {
     }
   }
 
+  /**
+   * Consume data from Kafka topic, Parse the data and load the same into MongoDb
+   * @param topic name of the Kafka topic from where data needs to be consumed
+   * @param dbname database name in the mongodb
+   * @param collectionName mongodb collection name
+   */
   def consumeFromKafkaAndStoreInDB(topic: String, dbname: String, collectionName: String): Unit = {
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
@@ -70,6 +88,11 @@ package object kafka {
     }
   }
 
+  /**
+   * Parse data and insert into Mongodb collection
+   * @param data date to be parsed
+   * @param collection name of the  mongodb collection
+   */
   def parseDataAndInsert(data: ConsumerRecord[String, String], collection: MongoCollection[Document]): Unit = {
     val responseOne: String = data.value()
     val globalMap = responseOne.parseJson.convertTo[Map[String, JsValue]]
