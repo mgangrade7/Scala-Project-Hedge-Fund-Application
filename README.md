@@ -80,6 +80,18 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic gm
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic ford --from-beginning
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic gm --from-beginning
 ```
+## How to run the project
+
+1. Start the MongoDB Server at localhost
+2. Start zookeeper at localhost
+3. Start kafka server at localhost
+4. Create kafka topics as **ford** and **gm**
+5. Start kafka producer for all the topics
+6. Start kafka consumer
+7. Start the first consumer by running Project -> src -> main -> scala -> kafka  -> consumer1.scala
+8. Similarly, Start the second consumer by running Project -> src -> main -> scala -> kafka  -> consumer2.scala
+9. Start the first producer by running Project -> src -> main -> scala -> kafka  -> producer1.scala
+10. Similarly, Start the second producer by running Project -> src -> main -> scala -> kafka  -> producer2.scala
 
 ## Authors
 * Amit Pingale
