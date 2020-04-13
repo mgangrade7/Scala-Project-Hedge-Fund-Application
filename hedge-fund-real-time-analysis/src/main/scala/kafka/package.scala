@@ -15,11 +15,6 @@ import scala.concurrent.Future
 import scala.io.Source
 
 package object kafka {
-
-  def sum(x: Int): Int = {
-    x + 10
-  }
-
   val APIKEY: String = "U4HV0SUO7S0J40TC"
 
   def checkURLResponse(url: String): HttpResponse[String] = {
@@ -36,11 +31,16 @@ package object kafka {
     // Make API call in every 5 minutes
     val url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+symbol+"&interval=5min&apikey="+APIKEY
     while(true) {
-      val request: HttpRequest = Http(url)
-      val record = new ProducerRecord[String, String](topic, request.asString.body)
-      producer.send(record)
-      Thread.sleep(300000)
-      //      producer.close()
+      checkURLResponse(url).code match {
+        case 200 => {
+          val request: HttpRequest = Http(url)
+          val record = new ProducerRecord[String, String](topic, request.asString.body)
+          producer.send(record)
+          Thread.sleep(300000)
+//          producer.close(
+        }
+        case _ => println("error in url response, response code : " + _)
+      }
     }
   }
 
