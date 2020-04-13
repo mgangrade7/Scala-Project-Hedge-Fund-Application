@@ -1,4 +1,3 @@
-import java.net.URL
 import java.util
 import java.util.Properties
 
@@ -11,9 +10,10 @@ import spray.json.DefaultJsonProtocol._
 import spray.json.{JsValue, _}
 
 import scala.collection.JavaConverters._
-import scala.concurrent.Future
-import scala.io.Source
 
+/**
+ * Package level object consist of all the required methods
+ */
 package object kafka {
   val APIKEY: String = "U4HV0SUO7S0J40TC"
 

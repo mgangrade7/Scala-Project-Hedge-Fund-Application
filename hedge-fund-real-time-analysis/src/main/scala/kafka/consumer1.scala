@@ -1,5 +1,9 @@
 package kafka
 
+/**
+ * Consume data from Kafka topic and store the same into MongoDb
+ */
+
 object consumer1 extends App {
 
   val topic: String = "ford"
