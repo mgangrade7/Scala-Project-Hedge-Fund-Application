@@ -22,7 +22,7 @@ package object kafka {
 
   val APIKEY: String = "U4HV0SUO7S0J40TC"
 
-  def checkURLResponse(url: String) = {
+  def checkURLResponse(url: String): HttpResponse[String] = {
     val response: HttpResponse[String] = Http(url).asString
     response
   }
