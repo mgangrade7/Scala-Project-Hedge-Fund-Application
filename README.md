@@ -1,7 +1,7 @@
 # SCALA-PROJECT 
 ## Hedge Fund Application: Real Time Risk Analysis
 
-![alt text](/hedge-fund-real-time-analysis/Images/logo.png "Logo Title")
+![alt text](/hedge-fund-real-time-analysis/Images/Hedge-Funds.jpg "Logo Title")
 
 ## Objective
 * Develop a scalable & reactive infrastructure for real-time risk analysis
