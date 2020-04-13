@@ -40,7 +40,7 @@
 * Tableau
 * Running Kafka cluster script
 
-## How to install and run Kafka server
+## How to install and run Kafka server on Ubuntu
 
 #### Step 1: Install Java
 ```sh
