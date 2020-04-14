@@ -54,7 +54,7 @@ package object kafka {
           Thread.sleep(300000)
 //          producer.close(
         }
-        case _ => println("error in url response, response code : " + _)
+        case _ => println("error in url response, response code : ")
       }
     }
   }
