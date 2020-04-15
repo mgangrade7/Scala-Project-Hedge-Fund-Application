@@ -2,6 +2,9 @@ package machineLearning
 
 import machineLearning.OutputSaver.pipelineSaver
 import org.apache.log4j.{Level, Logger}
+/**
+ * Driver to save machine learning pipeline
+ */
 
 object ModelTrain {
 
@@ -10,23 +13,18 @@ object ModelTrain {
     Logger.getLogger("org").setLevel(Level.OFF)
 
     def runModelTrain(Symbol: String): Unit = {
-      //stock symbol
-      val stock_symbol = Symbol
 
-      // create spark session
-      val spark = SparkSessionCreator.sparkSessionCreate()
+      val stock_symbol = Symbol//stock symbol
 
-      // train data
-      val rawTrainData = DataSourcer.rawTrainData(sparkSession = spark, stock_symbol)
+      val spark = SparkSessionCreator.sparkSessionCreate()// create spark session
 
-      // clean train data
-      val cleanTrainData = DataCleaner.cleanData(dataFrame = rawTrainData)
+      val rawTrainData = DataSourcer.rawTrainData(sparkSession = spark, stock_symbol)// train data
 
-      // fitted pipeline
-      val fittedPipeline = MachineLearning.pipelineFit(dataFrame = cleanTrainData, stock_symbol)
+      val cleanTrainData = DataCleaner.cleanData(dataFrame = rawTrainData) // clean train data
 
-      // save fitted pipeline
-      pipelineSaver(pipelineModel = fittedPipeline, stock_symbol)
+      val fittedPipeline = MachineLearning.pipelineFit(dataFrame = cleanTrainData, stock_symbol) // fitted pipeline
+
+      pipelineSaver(pipelineModel = fittedPipeline, stock_symbol)// save fitted pipeline
     }
 
     runModelTrain("ford")

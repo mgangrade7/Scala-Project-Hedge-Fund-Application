@@ -1,0 +1,5 @@
+Model,RMSE
+Linear Regressor,0.21757956340772727
+Decision Tree Regressor,0.018355486669832187
+Random Forest Regressor,0.015074016417693185
+Gradient Boosting Regressor,0.008821639019495252

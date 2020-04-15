@@ -2,6 +2,9 @@ package machineLearning
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.ml.PipelineModel
+/**
+ * Driver to make prediction and save into csv file
+ */
 
 object ModelPredict {
 
@@ -10,26 +13,20 @@ object ModelPredict {
     Logger.getLogger("org").setLevel(Level.OFF)
 
     def runModelPredict(Symbol: String): Unit = {
-      //stock symbol
-      val stock_symbol = Symbol
 
-      // create spark session
-      val spark = SparkSessionCreator.sparkSessionCreate()
+      val stock_symbol = Symbol//stock symbol
 
-      // train data
-      val rawTestData = DataSourcer.rawTestData(sparkSession = spark, Symbol = stock_symbol)
+      val spark = SparkSessionCreator.sparkSessionCreate() // create spark session
 
-      // clean train data
-      val cleanTestData = DataCleaner.cleanData(dataFrame = rawTestData)
+      val rawTestData = DataSourcer.rawTestData(sparkSession = spark, Symbol = stock_symbol)// train data
 
-      // load fitted pipeline
-      val fittedPipeline = PipelineModel.load(s"./${stock_symbol}_pipelines/${stock_symbol}_fitted-pipeline")
+      val cleanTestData = DataCleaner.cleanData(dataFrame = rawTestData)// clean train data
 
-      // make predictions
-      val predictions = fittedPipeline.transform(dataset = cleanTestData)
+      val fittedPipeline = PipelineModel.load(s"./${stock_symbol}_pipelines/${stock_symbol}_fitted-pipeline")// load fitted pipeline
 
-      // save prediction
-      OutputSaver.predictionsSaver(sparkSession = spark, dataFrame = predictions, Symbol = stock_symbol)
+      val predictions = fittedPipeline.transform(dataset = cleanTestData) // make predictions
+
+      OutputSaver.predictionsSaver(sparkSession = spark, dataFrame = predictions, Symbol = stock_symbol)// save prediction
     }
 
     runModelPredict("ford")

@@ -1,20 +1,15 @@
 package machineLearning
 
-import com.mongodb.spark.config.ReadConfig
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.lit
-import com.mongodb.spark._
 import com.mongodb.spark.config.ReadConfig
 import com.mongodb.spark.sql._
 import org.apache.spark.sql.SparkSession
-import com.mongodb.spark.MongoSpark
-
-import org.apache.spark.sql.functions.{max, min}
-import org.bson.Document
 
 object DataSourcer {
-
+  /**
+   * function to fetch train data from MongoDB and return DataFrame
+   * @param sparkSession entry to interact with underlying Spark functionality and allows programming Spark with DataFrame and Dataset APIs
+   */
   def rawTrainData(sparkSession: SparkSession, Symbol: String): DataFrame = {
 
     val readConfig: ReadConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "scaladb77", "collection" -> Symbol)) // 1)
@@ -22,7 +17,10 @@ object DataSourcer {
 
 
   }
-
+  /**
+   * function to fetch latest data from MongoDB and return DataFrame
+   * @param sparkSession entry to interact with underlying Spark functionality and allows programming Spark with DataFrame and Dataset APIs
+   */
   def rawTestData(sparkSession: SparkSession, Symbol: String): DataFrame = {
     val readConfig: ReadConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "scaladb", "collection" -> Symbol)) // 1)
     val df = sparkSession.read.mongo(readConfig)

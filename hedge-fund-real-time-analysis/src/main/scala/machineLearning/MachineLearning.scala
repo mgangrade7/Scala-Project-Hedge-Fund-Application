@@ -1,16 +1,25 @@
 package machineLearning
 
+import machineLearning.MLModels.LinearRegressionModel.linearRegressionModel
+import machineLearning.MLModels.DecisionTreeRegressionModel.decisionTreeRegressionModel
+import machineLearning.MLModels.RandomForestRegressionModel.randomForestRegressionModel
+import machineLearning.MLModels.GradientBoostingRegressionModel.gradientBoostingRegressionModel
+
+
 import org.apache.spark.ml.evaluation.RegressionEvaluator
 import org.apache.spark.ml.feature.VectorAssembler
-import org.apache.spark.ml.regression._
 import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object MachineLearning extends App {
 
-
+  /**
+   * Develope ensemble of machine learning model and fit model in the pipeline based upon RMSE value
+   * @param dataFrame train data
+   * @param Symbol stock symbol
+   */
   def pipelineFit(dataFrame: DataFrame, Symbol: String): PipelineModel = {
-    println("*************************************")
+    println("****************** Inside Machine Learning -> pipelineFit *******************")
     dataFrame.show()
     // define feature vector assembler
     val featureAssembler = new VectorAssembler()
@@ -19,19 +28,22 @@ object MachineLearning extends App {
         "Low",
         "Close",
         "Volume"
-      )
-      )
+      ))
       .setOutputCol("features")
 
-    //1st row multiply by 30
 
-
-    val Array(trainingData, testData) = dataFrame.randomSplit(Array(0.7, 0.3))
+    // ************************* Data Pre-processing *************************
+    val Array(trainingData, testData) = dataFrame.randomSplit(Array(0.7, 0.3)) //Split data train (70%) and test (30%)
 
     val df_train = featureAssembler.transform(trainingData)
+    println("Training Data")
+    df_train.show(5)
+    df_train.select("features").show(5)
+    println("Testing Data")
     val df_test = featureAssembler.transform(testData)
-
-    //val final_model
+    df_test.show(5)
+    df_test.select("features").show(5)
+    println("*******************")
 
     // ************************* compute test error *************************
     val evaluator = new RegressionEvaluator()
@@ -39,63 +51,11 @@ object MachineLearning extends App {
       .setPredictionCol("prediction")
       .setMetricName("rmse")
 
-    // ************************* define Linear regression *************************
-    val lr = new LinearRegression()
-      .setMaxIter(10)
-      .setRegParam(0.3)
-      .setElasticNetParam(0.8)
-
-    val lrModel: LinearRegressionModel = lr.fit(df_train)
-    val predictions_lr = lrModel.transform(df_test)
-
-    // select (prediction, true label)
-    predictions_lr.select("prediction", "label", "features").show(5)
-
-    val rmse_lr = evaluator.evaluate(predictions_lr)
-    println(s"Root Mean Squared Error (RMSE) on test data = $rmse_lr")
-
-    // ************************* define decision tree regression *************************
-    val dt = new DecisionTreeRegressor()
-      .setLabelCol("label")
-      .setFeaturesCol("features")
-
-    val dtModel: DecisionTreeRegressionModel = dt.fit(df_train)
-    val predictions_dt = dtModel.transform(df_test)
-
-    predictions_dt.select("prediction", "label", "features").show(5)
-
-    val rmse_dt = evaluator.evaluate(predictions_dt)
-    println(s"Root Mean Squared Error (RMSE) on test data = $rmse_dt")
-
-
-    // ************************* define random forest regression *************************
-    val rf = new RandomForestRegressor()
-      .setLabelCol("label")
-      .setFeaturesCol("features")
-
-    val rfrModel: RandomForestRegressionModel = rf.fit(df_train)
-    val predictions_rfr = rfrModel.transform(df_test)
-
-    // select (prediction, true label)
-    predictions_rfr.select("prediction", "label", "features").show(5)
-
-    // compute test error
-
-    val rmse_rfr = evaluator.evaluate(predictions_rfr)
-    println(s"Root Mean Squared Error (RMSE) on test data = $rmse_rfr")
-
-    // ************************* define Gradient boosting regression *************************
-    val gbt = new GBTRegressor()
-      .setLabelCol("label")
-      .setFeaturesCol("features")
-      .setMaxIter(10)
-
-    val gbtModel: GBTRegressionModel = gbt.fit(df_train)
-    val predictions_gbt = gbtModel.transform(df_test)
-    predictions_gbt.select("prediction", "label", "features").show(5)
-
-    val rmse_gbr = evaluator.evaluate(predictions_gbt)
-    println(s"Root Mean Squared Error (RMSE) on test data = $rmse_gbr")
+    // ************************* Machine Learning Models *************************
+    val(lrModel, rmse_lr) = linearRegressionModel(df_train, df_test, evaluator) //Linear Regression Model
+    val(dtModel, rmse_dt) = decisionTreeRegressionModel(df_train, df_test, evaluator) //Decision Tree Regression Model
+    val(rfrModel, rmse_rfr) = randomForestRegressionModel(df_train, df_test, evaluator) //Random Forest Regression
+    val(gbtModel, rmse_gbr) = gradientBoostingRegressionModel(df_train, df_test, evaluator) //Gradient Boosting Regression
 
     //*************************  DataFrame for analysing model metrics *************************
     val ss = SparkSession.builder().appName("DataSet Test")
@@ -109,12 +69,9 @@ object MachineLearning extends App {
       ("Gradient Boosting Regressor", rmse_gbr)).toDF("Model", "RMSE")
 
     ModelMetricDS.show()
-    OutputSaver.MetricSaver(ModelMetricDS, Symbol)
+    OutputSaver.MetricSaver(ModelMetricDS, Symbol) //Saving Data frame in local
 
-
-    //*************************  Selecting model with lowest RSME value for deployment in pipeline *************************
-    def lowestKeyMember[Any](m: Map[Double, Any]): Any = m(m.keys.min)
-
+    //************************* ML Model Map *************************
     val models: Map[Double, Any] = Map(
       rmse_lr -> lrModel,
       rmse_dt -> dtModel,
@@ -122,24 +79,25 @@ object MachineLearning extends App {
       rmse_gbr -> gbtModel
     )
 
-    val final_model = lowestKeyMember(models).asInstanceOf[PipelineStage]
+    //************************* Model Selection *************************
+    def lowestKeyMember[Any](m: Map[Double, Any]): Any = m(m.keys.min)
+    val final_model = lowestKeyMember(models).asInstanceOf[PipelineStage] //Selecting the model with lowest RMSE value
 
     //*************************  Creating Pipeline *************************
 
     val pipeline = new Pipeline()
       .setStages(
         Array(
-          featureAssembler,
-          final_model
+          featureAssembler, //Schema for input/output data
+          final_model //fitting selected model in pipeline
         )
       )
 
-
-    // fit pipeline
+    //************************* Initiating Pipeline *************************
     val pipelineModel = pipeline.fit(dataFrame)
 
-    // return fitted pipeline
-    pipelineModel
+
+    pipelineModel // return fitted pipeline
 
   }
 

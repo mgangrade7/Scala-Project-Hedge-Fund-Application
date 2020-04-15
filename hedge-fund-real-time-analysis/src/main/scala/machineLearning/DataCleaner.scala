@@ -4,7 +4,10 @@ import org.apache.spark.sql.DataFrame
 
 object DataCleaner {
 
-  // function to produce a clean data frame from a raw data frame
+  /**
+   * function to produce a clean data frame from a raw data frame
+   * @param dataFrame DateFrame to train the model
+   */
   def cleanData(dataFrame: DataFrame): DataFrame = {
 
     // def function to format data correctly
