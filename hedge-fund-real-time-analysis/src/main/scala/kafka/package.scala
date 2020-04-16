@@ -17,11 +17,11 @@ import scala.collection.JavaConverters._
 package object kafka {
 
 //  API Key provided by AlphaVantage. One can get the key after registering on website.
-  val APIKEY: String = "U4HV0SUO7S0J40TC"
+  lazy val APIKEY: String = "U4HV0SUO7S0J40TC"
 
   /**
    * Function to check the URL response
-   * @param url link of the URL
+   * @param url link/URL
    * @return HTTP Response having properties like body, code, header
    */
   def checkURLResponse(url: String): HttpResponse[String] = {
@@ -30,32 +30,37 @@ package object kafka {
   }
 
   /**
-   * Publish data on kafka topic
+   * Function to publish data on Kafka topic
+   * @param url URL from which data fetched
    * @param topic name of the kafka topic
-   * @param symbol symbol of the company share found on AlphaVantage website
    */
-  def publishToKafka(topic: String, symbol: String): Unit = {
+  def publish(url: String, topic: String): Unit ={
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-
     val producer = new KafkaProducer[String, String](props)
+    val request: HttpRequest = Http(url)
+    val record = new ProducerRecord[String, String](topic, request.asString.body)
+    producer.send(record)
+    producer.close()
+  }
+
+  /**
+   * Check URL response and call Publish to publish data on kafka topic
+   * @param topic name of the kafka topic
+   * @param symbol symbol of the company share; found on AlphaVantage website
+   */
+  def publishToKafka(topic: String, symbol: String): Unit = {
 
     val url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+symbol+"&interval=5min&apikey="+APIKEY
 
-    // Make API call in every 5 minutes
-    while(true) {
+    while (true){
       checkURLResponse(url).is2xx match {
-        case true => {
-          val request: HttpRequest = Http(url)
-          val record = new ProducerRecord[String, String](topic, request.asString.body)
-          producer.send(record)
-          Thread.sleep(300000)
-//          producer.close(
-        }
-        case false => println("error in url response")
+        case true => publish(url, topic)
+        case false => println("Error in response")
       }
+      Thread.sleep(300000)
     }
   }
 
