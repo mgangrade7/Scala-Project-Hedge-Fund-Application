@@ -93,7 +93,9 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic gm --fro
 1. Start the first consumer by running Project -> src -> main -> scala -> kafka  -> consumer1.scala
 2. Similarly, Start the second consumer by running Project -> src -> main -> scala -> kafka  -> consumer2.scala
 3. Start the first producer by running Project -> src -> main -> scala -> kafka  -> producer1.scala
-4. Similarly, Start the second producer by running Project -> src -> main -> scala -> kafka  -> producer2.scala
+4. Similarly, Start the second producer by running Project -> src -> main -> scala -> kafka  -> producer2.scala 
+5. Start build of machine learning model and pipeline by running Project -> src -> main -> scala -> machineLearning  -> ModelTrain.scala
+6. Find the momentum of the stock by running Project -> src -> main -> scala -> machineLearning  -> ModelPredict.scala
 
 ## Authors
 * Amit Pingale
