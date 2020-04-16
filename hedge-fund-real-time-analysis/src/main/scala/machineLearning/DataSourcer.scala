@@ -12,7 +12,7 @@ object DataSourcer {
    */
   def rawTrainData(sparkSession: SparkSession, Symbol: String): DataFrame = {
 
-    val readConfig: ReadConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "scaladb77", "collection" -> Symbol)) // 1)
+    val readConfig: ReadConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "scaladb", "collection" -> Symbol)) // 1)
     sparkSession.read.mongo(readConfig)
 
 
