@@ -27,20 +27,27 @@ package object kafka {
     response
   }
 
-  def writeToKafka(topic: String, symbol: String): Unit = {
+  def write(url: String, topic: String): Unit ={
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     val producer = new KafkaProducer[String, String](props)
-    // Make API call in every 5 minutes
+    val request: HttpRequest = Http(url)
+    val record = new ProducerRecord[String, String](topic, request.asString.body)
+    producer.send(record)
+    producer.close()
+  }
+
+  def writeToKafka(topic: String, symbol: String): Unit = {
+
     val url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+symbol+"&interval=5min&apikey="+APIKEY
-    while(true) {
-      val request: HttpRequest = Http(url)
-      val record = new ProducerRecord[String, String](topic, request.asString.body)
-      producer.send(record)
-      Thread.sleep(300000)
-      //      producer.close()
+
+    while (true){
+      checkURLResponse(url).is2xx match {
+        case true => write(url, topic); Thread.sleep(300000)
+        case false => println("Error in response")
+      }
     }
   }
 

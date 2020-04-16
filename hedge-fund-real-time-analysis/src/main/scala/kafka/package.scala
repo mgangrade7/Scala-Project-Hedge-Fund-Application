@@ -46,15 +46,15 @@ package object kafka {
 
     // Make API call in every 5 minutes
     while(true) {
-      checkURLResponse(url).code match {
-        case 200 => {
+      checkURLResponse(url).is2xx match {
+        case true => {
           val request: HttpRequest = Http(url)
           val record = new ProducerRecord[String, String](topic, request.asString.body)
           producer.send(record)
           Thread.sleep(300000)
 //          producer.close(
         }
-        case _ => println("error in url response, response code : ")
+        case false => println("error in url response")
       }
     }
   }
