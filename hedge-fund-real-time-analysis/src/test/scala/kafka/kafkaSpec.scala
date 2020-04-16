@@ -3,14 +3,20 @@ package kafka
 import java.util
 import java.util.Properties
 
-import org.apache.kafka.clients.consumer.{ConsumerRecords, KafkaConsumer}
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.collection.JavaConverters._
 
+/**
+ * Code to test publish and consume data from Kafka server
+ * Topic name as 'test' must be created for working of this test cases
+ * This test case will work only for very first data publish and consume
+ */
+
 class kafkaSpec extends FlatSpec with Matchers{
 
-  val url = "https://raw.githubusercontent.com/mgangrade7/Java-Coding-and-Concepts/master/test.txt"
+  val url = "https://raw.githubusercontent.com/mgangrade7/Scala-Project-Hedge-Fund-Application/master/hedge-fund-real-time-analysis/src/main/resources/testinput.txt"
   val topic = "test"
 
   behavior of "kafka"
