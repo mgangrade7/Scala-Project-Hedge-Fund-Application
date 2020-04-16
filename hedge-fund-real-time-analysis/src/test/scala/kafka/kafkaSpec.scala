@@ -10,11 +10,11 @@ import scala.collection.JavaConverters._
 
 /**
  * Code to test publish and consume data from Kafka server
- * Topic name as 'test' must be created for working of this test cases
+ * Topic name as 'test' must be created on kafka server localhost for working of the test case
  * This test case will work only for very first data publish and consume
  */
 
-class kafkaSpec extends FlatSpec with Matchers{
+class kafkaSpec extends FlatSpec with Matchers {
 
   val url = "https://raw.githubusercontent.com/mgangrade7/Scala-Project-Hedge-Fund-Application/master/hedge-fund-real-time-analysis/src/main/resources/testinput.txt"
   val topic = "test"
